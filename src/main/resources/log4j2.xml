@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="INFO">
+    <properties>
+        <property name="string_log">%-23d{dd-MM-yyyy HH:mm:ss}[%-5p] %-42l %m%n</property>
+        <Property name="basePath">C:\\logs</Property>
+    </properties>
+    <Appenders>
+        <Console name="console">
+            <PatternLayout>
+                <pattern>${string_log}</pattern>
+            </PatternLayout>
+        </Console>
+        <RollingFile name="fileLogger" fileName="${basePath}/app-info.log" filePattern="${basePath}/app-info-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+              <!--  <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>-->
+                <pattern>${string_log}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="debug">
+            <appender-ref ref="console" level="error"/>
+            <appender-ref ref="fileLogger" level="debug"/>
+        </Root>
+        <Logger name="org.hibernate" additivity="false" level="error"/>
+    </Loggers>
+</configuration>
