@@ -88,7 +88,7 @@ public class SileniumUtil {
     private static void login(WebDriver driver) {
         //this is 100% present, as checked in init method.
         WebElement loginEl = getElementLocatedBy(driver, By.id("webcontent_0_txtUserName"));
-        loginEl.sendKeys("");
+        loginEl.sendKeys("120704");
 
         //sending password
         WebElement passEl = null;
@@ -105,7 +105,7 @@ public class SileniumUtil {
                 }
             }
         }
-        passEl.sendKeys("");
+        passEl.sendKeys("E9L-Xqm-gp7-2dC");
 
         //clicking login button
         WebElement logBtnEl = null;

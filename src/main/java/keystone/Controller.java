@@ -8,7 +8,7 @@ import java.util.List;
 public class Controller {
 
     public static void main(String[] args) {
-        new Controller().getItemsFromFile(100);
+        new Controller().getItemsFromFile(50);
        // TestClass.testItemSaveWithSpecs();
     }
 
@@ -22,7 +22,7 @@ public class Controller {
             parsedItemsCounter++;
             if (parsedItemsCounter==maxItemsToParsePerDriver) {
                 driver.close();
-                driver = SileniumUtil.reboot();
+                driver = SileniumUtil.initDriver();
             }
         }
 

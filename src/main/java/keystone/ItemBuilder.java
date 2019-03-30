@@ -165,7 +165,7 @@ public class ItemBuilder {
         //test section
         ////////////////////////////////
         List<WebElement> spanEls = attBlock.findElements(By.tagName("span"));
-        if (spanEls.size()!=3){
+        if (spanEls.size()>3){
             logger.error("unexpected span element quantity at " + attBlock.getText());
         }
         spanEls.forEach(spanEl->{
@@ -185,13 +185,13 @@ public class ItemBuilder {
             attName = attBlock.findElement(By.className("applicationAttributeName")).getText();
         }
         catch (NoSuchElementException e){
-            logger.error("Couldn't find attribute name for " + attBlock.getText());
+            logger.info("Couldn't find attribute name for " + attBlock.getText());
         }
         try {
              attValue = attBlock.findElement(By.className("applicationRequiredProducts")).getText();
         }
         catch (NoSuchElementException e){
-            logger.error("Couldn't find attribute value for " + attBlock.getText());
+            logger.info("Couldn't find attribute value for " + attBlock.getText());
         }
 
         attribute.setAttName(attName);
