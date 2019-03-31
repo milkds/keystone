@@ -8,8 +8,8 @@ import java.util.List;
 public class Controller {
 
     public static void main(String[] args) {
-        new Controller().getItemsFromFile(50);
-       // TestClass.testItemSaveWithSpecs();
+       // new Controller().getItemsFromFile(50);
+        TestClass.testItemBuild();
     }
 
     public void getItemsFromFile(int maxItemsToParsePerDriver){

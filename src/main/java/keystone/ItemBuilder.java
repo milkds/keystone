@@ -153,50 +153,51 @@ public class ItemBuilder {
 
     private List<ItemCarAttribute> getItemCarAttributes(WebElement carBlockEl) {
         List<ItemCarAttribute> result = new ArrayList<>();
-        WebElement attBlock = null;
-        try {
-            attBlock = carBlockEl.findElement(By.className("applicationBlock"));
-        }
-        catch (NoSuchElementException e){
+        List<WebElement> attBlocks = carBlockEl.findElements(By.className("applicationBlock"));
+        if (attBlocks.size()==0){
             logger.debug("Couldn't find fitment att element for " + carBlockEl.getText());
             return result;
         }
 
-        //test section
-        ////////////////////////////////
-        List<WebElement> spanEls = attBlock.findElements(By.tagName("span"));
-        if (spanEls.size()>3){
-            logger.error("unexpected span element quantity at " + attBlock.getText());
-        }
-        spanEls.forEach(spanEl->{
-            String className = spanEl.getAttribute("class");
-            switch (className){
-                case "spanBullet": break;
-                case "applicationAttributeName": break;
-                case "applicationRequiredProducts": break;
-                default: logger.error("Unexpected tag class for fitment attribute " + className);
+        attBlocks.forEach(attBlock->{
+            //test section
+            ////////////////////////////////
+            List<WebElement> spanEls = attBlock.findElements(By.tagName("span"));
+            if (spanEls.size()>3){
+                logger.error("unexpected span element quantity at " + attBlock.getText());
             }
-        });
-        ////////////////////////////////
-        ItemCarAttribute attribute = new ItemCarAttribute();
-        String attName = "";
-        String attValue = "";
-        try {
-            attName = attBlock.findElement(By.className("applicationAttributeName")).getText();
-        }
-        catch (NoSuchElementException e){
-            logger.info("Couldn't find attribute name for " + attBlock.getText());
-        }
-        try {
-             attValue = attBlock.findElement(By.className("applicationRequiredProducts")).getText();
-        }
-        catch (NoSuchElementException e){
-            logger.info("Couldn't find attribute value for " + attBlock.getText());
-        }
+            spanEls.forEach(spanEl->{
+                String className = spanEl.getAttribute("class");
+                switch (className){
+                    case "spanBullet": break;
+                    case "applicationAttributeName": break;
+                    case "applicationRequiredProducts": break;
+                    default: logger.error("Unexpected tag class for fitment attribute " + className);
+                }
+            });
+            ////////////////////////////////
+            ItemCarAttribute attribute = new ItemCarAttribute();
+            String attName = "";
+            String attValue = "";
+            try {
+                attName = attBlock.findElement(By.className("applicationAttributeName")).getText();
+            }
+            catch (NoSuchElementException e){
+                logger.info("Couldn't find attribute name for " + attBlock.getText());
+            }
+            try {
+                attValue = attBlock.findElement(By.className("applicationRequiredProducts")).getText();
+            }
+            catch (NoSuchElementException e){
+                logger.info("Couldn't find attribute value for " + attBlock.getText());
+            }
 
-        attribute.setAttName(attName);
-        attribute.setAttValue(attValue);
-        result.add(attribute);
+            attribute.setAttName(attName);
+            attribute.setAttValue(attValue);
+            result.add(attribute);
+        });
+
+
 
         return result;
     }

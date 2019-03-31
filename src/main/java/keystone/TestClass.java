@@ -35,7 +35,8 @@ public class TestClass {
 
     public static void testItemBuild(){
        // String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=BLS24-253208";
-        String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=SKYH7006";
+       // String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=SKYH7006";
+        String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=BLS35-197263";
         WebDriver driver = SileniumUtil.initDriver();
         SileniumUtil.openItemPage(driver, url);
         new ItemBuilder().buildItem(driver);

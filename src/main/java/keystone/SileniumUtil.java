@@ -7,10 +7,13 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Time;
 import java.time.Duration;
+import java.util.Properties;
 
 public class SileniumUtil {
 
@@ -87,8 +90,14 @@ public class SileniumUtil {
 
     private static void login(WebDriver driver) {
         //this is 100% present, as checked in init method.
+        Properties appProps = new Properties();
+        try {
+            appProps.load(new FileInputStream("src\\main\\resources\\app.properties"));
+        } catch (IOException ignored) {
+        }
         WebElement loginEl = getElementLocatedBy(driver, By.id("webcontent_0_txtUserName"));
-        loginEl.sendKeys("120704");
+
+        loginEl.sendKeys(appProps.getProperty("login"));
 
         //sending password
         WebElement passEl = null;
@@ -105,7 +114,7 @@ public class SileniumUtil {
                 }
             }
         }
-        passEl.sendKeys("E9L-Xqm-gp7-2dC");
+        passEl.sendKeys(appProps.getProperty("pass"));
 
         //clicking login button
         WebElement logBtnEl = null;
