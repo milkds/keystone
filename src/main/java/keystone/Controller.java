@@ -1,6 +1,7 @@
 package keystone;
 
 import keystone.entities.KeyItem;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
 import java.util.List;
@@ -8,8 +9,8 @@ import java.util.List;
 public class Controller {
 
     public static void main(String[] args) {
-       // new Controller().getItemsFromFile(50);
-        TestClass.testItemBuild();
+        new Controller().getItemsFromFile(200);
+    //    TestClass.testItemBuild();
     }
 
     public void getItemsFromFile(int maxItemsToParsePerDriver){
@@ -17,12 +18,26 @@ public class Controller {
         int parsedItemsCounter = 0;
         WebDriver driver = SileniumUtil.initDriver();
         for (String itemLink : itemPartsToParse) {
-            new Controller().parseItem(driver, itemLink);
+           while (true){
+               try {
+                   new Controller().parseItem(driver, itemLink);
+                   break;
+               }
+               catch (TimeoutException e){
+                   driver.close();
+                   driver = SileniumUtil.initDriver();
+               }
+           }
             //checking if driver worked enough for reboot
             parsedItemsCounter++;
             if (parsedItemsCounter==maxItemsToParsePerDriver) {
                 driver.close();
                 driver = SileniumUtil.initDriver();
+                try {
+                    Thread.sleep(5*60*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

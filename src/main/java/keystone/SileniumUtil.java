@@ -24,7 +24,14 @@ public class SileniumUtil {
     public static WebDriver initDriver(){
         System.setProperty("webdriver.chrome.driver", "src\\main\\resources\\chromedriver.exe");
         WebDriver driver = new ChromeDriver();
-        driver.get(BASE_LOGIN_URL);
+        while (true){
+            try {
+                driver.get(BASE_LOGIN_URL);
+                break;
+            }
+            catch (TimeoutException ignored){
+            }
+        }
         String id = "webcontent_0_txtUserName";
         By testBy = By.id(id);
         while (true){
@@ -52,8 +59,10 @@ public class SileniumUtil {
                driver.get(url);
                break;
            }
-           catch (TimeoutException e){
+           catch (TimeoutException|NoSuchWindowException e){
                logger.error("failed to start opening url " + url);
+               driver.close();
+               driver = SileniumUtil.initDriver();
            }
        }
         logger.debug("opening page for " + url);
@@ -68,8 +77,9 @@ public class SileniumUtil {
             }
             catch (TimeoutException e){
                 if (hasConnection(BASE_LOGIN_URL)){
-                    logger.debug(driver.getCurrentUrl());
-                    return false;
+                    logger.error("couldn't open item page " + url);
+                    driver.close();
+                    driver = SileniumUtil.initDriver();
                 }
             }
         }
@@ -143,8 +153,8 @@ public class SileniumUtil {
         while (true){
             try {
                 new FluentWait<>(driver)
-                        .withTimeout(Duration.ofSeconds(60))
-                        .pollingEvery(Duration.ofMillis(2))
+                        .withTimeout(Duration.ofSeconds(600))
+                        .pollingEvery(Duration.ofMillis(50))
                         .ignoring(WebDriverException.class)
                         .until(ExpectedConditions.presenceOfElementLocated(By.id("cartCheckoutContainer")));
                 break;
