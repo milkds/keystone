@@ -1,6 +1,8 @@
 package keystone;
 
 import keystone.entities.KeyItem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Controller {
+    private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
     public static void main(String[] args) {
       //  new Controller().getItemsFromFile(200);
@@ -29,7 +32,7 @@ public class Controller {
             KeyItem item = new ItemBuilder().buildItem(itemDriver);
             KeyDAO.saveItem(item);
             itemDriver.close();
-            System.out.printf("Parsed item %d of total %d", currentItem, totalItems);
+            logger.info("Parsed item "+ currentItem + " of total " + totalItems);
             currentItem++;
         }
 

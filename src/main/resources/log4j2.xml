@@ -25,7 +25,7 @@
 
     <Loggers>
         <Root level="debug">
-            <appender-ref ref="console" level="error"/>
+            <appender-ref ref="console" level="info"/>
             <appender-ref ref="fileLogger" level="debug"/>
         </Root>
         <Logger name="org.hibernate" additivity="false" level="error"/>
