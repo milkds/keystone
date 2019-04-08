@@ -1,20 +1,42 @@
 package keystone;
 
 import keystone.entities.KeyItem;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
 import java.util.List;
+import java.util.Set;
 
 public class Controller {
 
     public static void main(String[] args) {
-        new Controller().getItemsFromFile(200);
-    //    TestClass.testItemBuild();
+      //  new Controller().getItemsFromFile(200);
+       // TestClass.testTwoWindows();
+        new Controller().parseItemsFromFile();
+    }
+
+
+    public void parseItemsFromFile(){
+        //list of item urls
+        Set<String> itemPartsToParse = new JobDispatcher().getNewItems();
+        WebDriver driver = SileniumUtil.initDriver();
+        Set<Cookie> cookies = driver.manage().getCookies();
+        int totalItems = itemPartsToParse.size();
+        int currentItem = 1;
+        for (String itemLink : itemPartsToParse) {
+            WebDriver itemDriver = new ItemOpener(cookies).openItemPage(itemLink);
+            KeyItem item = new ItemBuilder().buildItem(itemDriver);
+            KeyDAO.saveItem(item);
+            itemDriver.close();
+            System.out.printf("Parsed item %d of total %d", currentItem, totalItems);
+            currentItem++;
+        }
+
     }
 
     public void getItemsFromFile(int maxItemsToParsePerDriver){
-        List<String> itemPartsToParse = new JobDispatcher().getNewItems();
+        Set<String> itemPartsToParse = new JobDispatcher().getNewItems();
         int parsedItemsCounter = 0;
         WebDriver driver = SileniumUtil.initDriver();
         for (String itemLink : itemPartsToParse) {

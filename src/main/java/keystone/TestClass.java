@@ -8,7 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -17,9 +19,31 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class TestClass {
     private static final Logger logger = LogManager.getLogger(TestClass.class.getName());
+
+
+    public static void testTwoWindows(){
+        WebDriver baseDriver = SileniumUtil.initDriver();
+        Set<Cookie> allCookies = baseDriver.manage().getCookies();
+        System.out.println(allCookies.size());
+        WebDriver newDriver = new ChromeDriver();
+        newDriver.get("https://www.example.com/");
+        for(Cookie cookie : allCookies) {
+            newDriver.manage().addCookie(cookie);
+        }
+        newDriver.get("https://wwwsc.ekeystone.com/Search/Detail?pid=BLS47-244566");
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        newDriver.close();
+        baseDriver.quit();
+    }
 
     public static void testLogin(){
         WebDriver driver = SileniumUtil.initDriver();

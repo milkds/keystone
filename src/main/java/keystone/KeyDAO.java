@@ -13,7 +13,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class KeyDAO {
     private static final Logger logger = LogManager.getLogger(KeyDAO.class.getName());
@@ -216,4 +218,18 @@ public class KeyDAO {
     }
 
 
+    public static Set<String> getParsedItems() {
+        Session session = HibernateUtil.getSession();
+        List<String> parsedItemsList = new ArrayList<>();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<String> crQ = builder.createQuery(String.class);
+        Root<KeyItem> root = crQ.from(KeyItem.class);
+        crQ.select(root.get("partNo"));
+        Query q = session.createQuery(crQ);
+        parsedItemsList = q.getResultList();
+        session.close();
+        Set<String> parsedItemSet = new HashSet<>(parsedItemsList);
+
+        return parsedItemSet;
+    }
 }
