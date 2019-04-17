@@ -85,26 +85,23 @@ public class KeyDAO {
         List<Car> cars = item.getCars();
         List<Car> finalCars = new ArrayList<>();
         cars.forEach(car->{
-            List<CarAttribute> attributes = car.getAttributes();
-            List<CarAttribute> finalAttributes = new ArrayList<>();
-            if (attributes!=null&& attributes.size()!=0){
-                attributes.forEach(attribute->{
-                    attribute = checkCarAttributeExistence(attribute, session);
-                    finalAttributes.add(attribute);
-                });
-                car.setAttributes(finalAttributes);
-            }
             Car dbCar = getExistingCar(car, session);
             if (dbCar!=null){
-                dbCar.getAttributes().addAll(finalAttributes);
-                session.update(dbCar);
                 finalCars.add(dbCar);
             }
             else {
+                List<CarAttribute> attributes = car.getAttributes();
+                List<CarAttribute> finalAttributes = new ArrayList<>();
+                if (attributes!=null&& attributes.size()!=0){
+                    attributes.forEach(attribute->{
+                        attribute = checkCarAttributeExistence(attribute, session);
+                        finalAttributes.add(attribute);
+                    });
+                    car.setAttributes(finalAttributes);
+                }
                 session.persist(car);
                 finalCars.add(car);
             }
-
         });
         item.setCars(finalCars);
     }
@@ -192,6 +189,7 @@ public class KeyDAO {
         }
         catch (NonUniqueResultException e){
             logger.error("Duplicate car attribute " + attribute);
+            System.exit(1);
         }
         if (testAtt==null){
             return attribute;

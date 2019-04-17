@@ -20,13 +20,24 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
+        <RollingFile name="errorLogger" fileName="${basePath}/err-info.log" filePattern="${basePath}/err-info-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <!--  <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>-->
+                <pattern>${string_log}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
 
     </Appenders>
 
     <Loggers>
         <Root level="debug">
-            <appender-ref ref="console" level="info"/>
+            <appender-ref ref="console" level="debug"/>
             <appender-ref ref="fileLogger" level="debug"/>
+            <appender-ref ref="errorLogger" level="error"/>
         </Root>
         <Logger name="org.hibernate" additivity="false" level="error"/>
     </Loggers>
