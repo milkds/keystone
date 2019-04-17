@@ -90,8 +90,8 @@ public class KeyDAO {
                 finalCars.add(dbCar);
             }
             else {
-                List<CarAttribute> attributes = car.getAttributes();
-                List<CarAttribute> finalAttributes = new ArrayList<>();
+                Set<CarAttribute> attributes = car.getAttributes();
+                Set<CarAttribute> finalAttributes = new HashSet<>();
                 if (attributes!=null&& attributes.size()!=0){
                     attributes.forEach(attribute->{
                         attribute = checkCarAttributeExistence(attribute, session);

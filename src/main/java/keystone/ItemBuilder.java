@@ -7,7 +7,9 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemBuilder {
@@ -116,7 +118,7 @@ public class ItemBuilder {
         }
         else {
             logger.debug("Car attributes found");
-            List<CarAttribute> attributes = new ArrayList<>();
+            Set<CarAttribute> attributes = new HashSet<>();
             attributeElements.forEach(attEl->{
                 String attValue = attEl.getText();
                 if (attValue.endsWith(",")){

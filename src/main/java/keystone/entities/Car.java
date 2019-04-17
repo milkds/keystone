@@ -2,7 +2,9 @@ package keystone.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "cars")
@@ -37,7 +39,7 @@ public class Car {
             joinColumns = { @JoinColumn(name = "CAR_ID") },
             inverseJoinColumns = { @JoinColumn(name = "CAR_ATT_ID") }
     )
-    private List<CarAttribute> attributes = new ArrayList<>();
+    private Set<CarAttribute> attributes = new HashSet<>();
 
     @Transient
     private List<ItemCarAttribute> fitAttributes = new ArrayList<>();
@@ -90,10 +92,10 @@ public class Car {
     public void setAttString(String attString) {
         this.attString = attString;
     }
-    public List<CarAttribute> getAttributes() {
+    public Set<CarAttribute> getAttributes() {
         return attributes;
     }
-    public void setAttributes(List<CarAttribute> attributes) {
+    public void setAttributes(Set<CarAttribute> attributes) {
         this.attributes = attributes;
     }
     public List<ItemCarAttribute> getFitAttributes() {
