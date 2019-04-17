@@ -20,19 +20,15 @@ public class ItemOpener {
 
     WebDriver openItemPage(String itemLink) {
        WebDriver driver = prepareToOpenTargetURL();
-       int attempts = 0;
         while (true){
             try {
                 driver.get(itemLink);
                 break;
             }
             catch (TimeoutException e){
-                attempts++;
-                if (attempts==5){
-                    driver.close();
-                    driver = prepareToOpenTargetURL();
-                    attempts=0;
-                }
+                logger.debug("couldn't open url "+itemLink+" rebooting driver");
+                driver.close();
+                driver = prepareToOpenTargetURL();
             }
         }
         logger.debug("opened url " + itemLink);

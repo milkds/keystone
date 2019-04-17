@@ -3,6 +3,7 @@ package keystone;
 import keystone.entities.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -188,6 +189,9 @@ public class KeyDAO {
             logger.debug("attribute exists " + attribute);
         } catch (NoResultException e) {
             logger.debug("attribute doesn't exist " + attribute);
+        }
+        catch (NonUniqueResultException e){
+            logger.error("Duplicate car attribute " + attribute);
         }
         if (testAtt==null){
             return attribute;

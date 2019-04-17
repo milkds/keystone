@@ -14,6 +14,7 @@ import java.net.URLConnection;
 import java.sql.Time;
 import java.time.Duration;
 import java.util.Properties;
+import java.util.Set;
 
 public class SileniumUtil {
 
@@ -61,8 +62,7 @@ public class SileniumUtil {
            }
            catch (TimeoutException|NoSuchWindowException e){
                logger.error("failed to start opening url " + url);
-               driver.close();
-               driver = SileniumUtil.initDriver();
+               reboot(driver, url);
            }
        }
         logger.debug("opening page for " + url);
@@ -96,6 +96,12 @@ public class SileniumUtil {
                 }
             }
         }
+    }
+
+    private static void reboot(WebDriver driver, String url) {
+        Set<Cookie> cookies = driver.manage().getCookies();
+        driver.close();
+        driver = new ItemOpener(cookies).openItemPage(url);
     }
 
     private static void login(WebDriver driver) {
