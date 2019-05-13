@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +17,7 @@ public class ItemBuilder {
 
     private static final Logger logger = LogManager.getLogger(ItemBuilder.class.getName());
 
-    public KeyItem buildItem(WebDriver driver){
+    public KeyItem buildItem(WebDriver driver) throws IOException {
         KeyItem item = new KeyItem();
         getMake(item, driver);
         getPartNo(item, driver);
@@ -33,7 +34,7 @@ public class ItemBuilder {
         return item;
     }
 
-    private void getFits(KeyItem item, WebDriver driver) {
+    private void getFits(KeyItem item, WebDriver driver) throws IOException {
         logger.debug("opening fits");
         if (!fitsOpened(driver)){
             return;
@@ -42,7 +43,7 @@ public class ItemBuilder {
         item.setCars(cars);
     }
 
-    private List<Car> getCars(WebDriver driver) {
+    private List<Car> getCars(WebDriver driver) throws IOException {
         List<Car> result = new ArrayList<>();
         List<WebElement> carGroupElements = getCarGroupElements(driver);
         if (carGroupElements.size()==0){
@@ -51,17 +52,17 @@ public class ItemBuilder {
         List<String> carGroupIDs = getCarGroupIDs(carGroupElements);
         carGroupIDs.forEach(logger::debug);
         AtomicReference<Integer> counter = new AtomicReference<>(0);
-        carGroupIDs.forEach(carGroupID->{
+        for (String carGroupID : carGroupIDs) {
             List<Car> carsFromCarGroup = getCarsFromCarGroup(driver, carGroupID, counter.get());
             counter.getAndSet(counter.get() + 1);
             result.addAll(carsFromCarGroup);
-        });
+        }
 
 
         return result;
     }
 
-    private List<Car> getCarsFromCarGroup(WebDriver driver, String carGroupID, Integer counter) {
+    private List<Car> getCarsFromCarGroup(WebDriver driver, String carGroupID, Integer counter) throws IOException {
         //Element 100% exists, cause we won't get here, if it doesn't.
         WebElement carGroupEl = driver.findElement(By.id(carGroupID));
         Car templateCar = new Car();
@@ -204,7 +205,7 @@ public class ItemBuilder {
         return result;
     }
 
-    private boolean carPageOpened(WebDriver driver, WebElement carGroupEl) {
+    private boolean carPageOpened(WebDriver driver, WebElement carGroupEl) throws IOException {
         String url = carGroupEl.getAttribute("href");
         String id = carGroupEl.getAttribute("id");
         if (!SileniumUtil.openItemPage(driver, url)){

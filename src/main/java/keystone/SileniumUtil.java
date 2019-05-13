@@ -54,7 +54,7 @@ public class SileniumUtil {
     }
 
     //returns true, if item page opened successfully.
-    public static boolean openItemPage(WebDriver driver, String url){
+    public static boolean openItemPage(WebDriver driver, String url) throws IOException {
        while (true){
            try{
                driver.get(url);
@@ -98,8 +98,15 @@ public class SileniumUtil {
         }
     }
 
-    private static void reboot(WebDriver driver, String url) {
-        Set<Cookie> cookies = driver.manage().getCookies();
+    public static void reboot(WebDriver driver, String url) throws IOException {
+        Set<Cookie> cookies = null;
+       try {
+           cookies = driver.manage().getCookies();
+       }
+       catch (TimeoutException e){
+           logger.error("Timeout exception, while getting cookies from driver");
+           throw new IOException();
+       }
         driver.close();
         driver = new ItemOpener(cookies).openItemPage(url);
     }

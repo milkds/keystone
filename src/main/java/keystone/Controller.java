@@ -7,6 +7,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +30,16 @@ public class Controller {
         int currentItem = 1;
         for (String itemLink : itemPartsToParse) {
             WebDriver itemDriver = new ItemOpener(cookies).openItemPage(itemLink);
-            KeyItem item = new ItemBuilder().buildItem(itemDriver);
+            KeyItem item = null;
+          while (true){
+              try {
+                  item = new ItemBuilder().buildItem(itemDriver);
+                  break;
+                 } catch (IOException e) {
+                  itemDriver.close();
+                  itemDriver = new ItemOpener(cookies).openItemPage(itemLink);
+              }
+          }
             KeyDAO.saveItem(item);
             itemDriver.close();
             logger.info("Parsed item "+ currentItem + " of total " + totalItems);
@@ -38,7 +48,7 @@ public class Controller {
 
     }
 
-    public void getItemsFromFile(int maxItemsToParsePerDriver){
+    public void getItemsFromFile(int maxItemsToParsePerDriver) throws IOException {
         Set<String> itemPartsToParse = new JobDispatcher().getNewItems();
         int parsedItemsCounter = 0;
         WebDriver driver = SileniumUtil.initDriver();
@@ -49,8 +59,8 @@ public class Controller {
                    break;
                }
                catch (TimeoutException e){
-                   driver.close();
-                   driver = SileniumUtil.initDriver();
+                  // driver.close();
+                    SileniumUtil.reboot(driver, itemLink);
                }
            }
             //checking if driver worked enough for reboot
@@ -70,7 +80,7 @@ public class Controller {
         HibernateUtil.shutdown();
     }
 
-    public void parseItem(WebDriver driver, String itemLink){
+    public void parseItem(WebDriver driver, String itemLink) throws IOException {
         SileniumUtil.openItemPage(driver, itemLink);
         KeyItem item = new ItemBuilder().buildItem(driver);
         KeyDAO.saveItem(item);

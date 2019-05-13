@@ -17,6 +17,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -62,8 +63,16 @@ public class TestClass {
        // String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=SKYH7006";
         String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=BLS35-197263";
         WebDriver driver = SileniumUtil.initDriver();
-        SileniumUtil.openItemPage(driver, url);
-        new ItemBuilder().buildItem(driver);
+        try {
+            SileniumUtil.openItemPage(driver, url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            new ItemBuilder().buildItem(driver);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         driver.quit();
     }
 

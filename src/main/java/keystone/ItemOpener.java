@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.Set;
@@ -50,6 +51,7 @@ public class ItemOpener {
      */
     private WebDriver openTestURL() {
         WebDriver driver = new ChromeDriver();
+
         int attempts = 0;
         while (true){
             try {
