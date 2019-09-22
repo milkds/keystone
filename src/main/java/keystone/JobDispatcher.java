@@ -14,7 +14,8 @@ public class JobDispatcher {
 
        // return itemsToParse;
 
-        List<String> itemsToParse = badGetLinks();
+     //   List<String> itemsToParse = badGetLinks();
+        List<String> itemsToParse = getFullLinks();
         Set<String> parsedItems = KeyDAO.getParsedItems();
         Set<String> parsedItemsLinks = getParsedItemsLinks(parsedItems);
         Set<String> itemsToParseSet = new HashSet<>();
@@ -25,6 +26,22 @@ public class JobDispatcher {
         });
 
         return itemsToParseSet;
+    }
+
+    private List<String> getFullLinks() {
+        List<String> links = new ArrayList<>();
+        Scanner s = null;
+        try {
+            s = new Scanner(new File("src\\main\\resources\\links.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        while (s.hasNext()){
+            links.add(s.next());
+        }
+        s.close();
+
+        return links;
     }
 
     private Set<String> getParsedItemsLinks(Set<String> parsedItems) {

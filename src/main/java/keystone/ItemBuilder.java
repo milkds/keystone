@@ -5,12 +5,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ItemBuilder {
@@ -26,12 +28,174 @@ public class ItemBuilder {
         getShortDesc(item, driver);
         getDesc(item, driver);
         getImgLinks(item, driver);
+        getHtmlDesc(item, driver);
+        getPrices(item, driver);
+        getDocs(item, driver);
         getFits(item, driver);
 
 
         logger.debug("Item built: " + item);
 
         return item;
+    }
+
+    private void getDocs(KeyItem item, WebDriver driver) {
+        item.setDocLinks("");
+        WebElement docEl = null;
+        try {
+            docEl = driver.findElement(By.id("webcontent_0_row2_0_divDocumentsTab"));
+        }
+        catch (NoSuchElementException e){
+            logger.info("no docs tab at " + driver.getCurrentUrl());
+            return;
+        }
+        docEl.click();
+        WebElement docTabEl = null;
+        try {
+            docTabEl = new FluentWait<>(driver)
+                    .withTimeout(Duration.ofSeconds(120))
+                    .pollingEvery(Duration.ofMillis(2))
+                    .ignoring(WebDriverException.class)
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.id("documentsDiv")));
+        }
+        catch (TimeoutException e){
+            logger.error("No doc Element at " + driver.getCurrentUrl());
+            return;
+        }
+        List<WebElement> docEls = docTabEl.findElements(By.tagName("a"));
+        if (docEls.size()==0){
+            return;
+        }
+        StringBuilder docLinkBuilder = new StringBuilder();
+        docEls.forEach(docEl1->{
+            String link = docEl1.getAttribute("href");
+            if (link!=null){
+                docLinkBuilder.append(link);
+                docLinkBuilder.append(System.lineSeparator());
+            }
+        });
+        int linksLength = docLinkBuilder.length();
+        if (linksLength>0){
+            docLinkBuilder.setLength(linksLength-2);
+        }
+        item.setDocLinks(docLinkBuilder.toString());
+        logger.debug("got links " + docLinkBuilder.toString());
+    }
+
+    private void getHtmlDesc(KeyItem item, WebDriver driver) {
+        WebElement shortDescEl = null;
+        try {
+            shortDescEl = driver.findElement(By.id("webcontent_0_row2_0_productDetailHeader_lblDescription"));
+        }
+        catch (NoSuchElementException e){
+            logger.info("No short Desc at " + driver.getCurrentUrl());
+        }
+        String shortDescStr = "";
+        if (shortDescEl!=null){
+            shortDescStr = shortDescEl.getText();
+        }
+        WebElement fullDescEl = null;
+        try {
+            fullDescEl = driver.findElement(By.id("webcontent_0_row2_0_productDetailTabs_upAdditionalInfoTab"));
+        }
+        catch (NoSuchElementException e){
+            logger.info("No Full desc at " + driver.getCurrentUrl());
+        }
+        if (fullDescEl==null){
+          return;
+        }
+        List<WebElement> divElements = fullDescEl.findElements(By.tagName("div"));
+        if (divElements.size()==0){
+            return;
+        }
+        fullDescEl = divElements.get(0);
+        String fullDescStr = fullDescEl.getAttribute("innerHTML");
+
+        StringBuilder descHtmlBuilder = new StringBuilder();
+        if (shortDescStr.length()!=0){
+            descHtmlBuilder.append(shortDescStr);
+            descHtmlBuilder.append(System.lineSeparator());
+            descHtmlBuilder.append(System.lineSeparator());
+            descHtmlBuilder.append(System.lineSeparator());
+        }
+        descHtmlBuilder.append(fullDescStr);
+        item.setHtmlDescription(descHtmlBuilder.toString());
+        logger.debug("GOT DESCRIPTION:");
+        logger.debug(descHtmlBuilder.toString());
+
+    }
+
+    private void getPrices(KeyItem item, WebDriver driver) {
+        openPriceTab(driver);
+        BigDecimal myPrice = getPrice(driver, "webcontent_0_row2_0_productDetailBasicInfo_lblMyPrice");
+        BigDecimal jobberPrice = getPrice(driver, "webcontent_0_row2_0_productDetailBasicInfo_lblJobberPrice");
+        BigDecimal retailPrice = getPrice(driver, "webcontent_0_row2_0_productDetailBasicInfo_lblRetailPrice");
+
+        item.setMyPrice(myPrice);
+        item.setJobberPrice(jobberPrice);
+        item.setRetailPrice(retailPrice);
+
+    }
+
+    private BigDecimal getPrice(WebDriver driver, String elementID) {
+        WebElement priceEl = null;
+        try {
+            priceEl = driver.findElement(By.id(elementID));
+        }
+        catch (NoSuchElementException e){
+            logger.error("No element with id " + elementID +  " at " + driver.getCurrentUrl());
+            return new BigDecimal(0);
+        }
+        String priceStr = priceEl.getText();
+
+        return processPriceString(priceStr);
+    }
+
+
+    private void openPriceTab(WebDriver driver) {
+        logger.debug("getting prices");
+        WebElement openPricesEl = null;
+        try {
+            openPricesEl = driver.findElement(By.className("checkoutHide"));
+        }
+        catch (NoSuchElementException e){
+            logger.error("No Price element <class=checkoutHide> at " + driver.getCurrentUrl());
+            return;
+        }
+        openPricesEl.click();
+        WebElement myPriceEl = null;
+        try {
+            myPriceEl = new FluentWait<>(driver)
+                    .withTimeout(Duration.ofSeconds(120))
+                    .pollingEvery(Duration.ofMillis(2))
+                    .ignoring(WebDriverException.class)
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.id("webcontent_0_row2_0_productDetailBasicInfo_lblMyPrice")));
+        }
+        catch (TimeoutException e){
+            logger.error("No My Price Element at " + driver.getCurrentUrl());
+        }
+    }
+
+    private BigDecimal processPriceString(String priceString) {
+        if (priceString==null||priceString.length()==0){
+            logger.info("empty price string");
+            return new BigDecimal(0);
+        }
+        priceString = priceString.replaceAll("\\$", "");
+        priceString = priceString.replaceAll(",", "");
+        priceString = priceString.replaceAll("USD", "");
+        priceString = priceString.trim();
+
+        BigDecimal result = null;
+        try{
+            result = new BigDecimal(priceString);
+        }
+        catch (NumberFormatException e){
+            logger.info("invalid price string - " + priceString);
+            result = new BigDecimal(0);
+        }
+
+        return result;
     }
 
     private void getFits(KeyItem item, WebDriver driver) throws IOException {
@@ -446,6 +610,7 @@ public class ItemBuilder {
         WebElement makeEl = null;
         try {
             makeEl = SileniumUtil.getElementLocatedBy(driver, By.id("webcontent_0_row2_0_productDetailBasicInfo_lblSupplier"));
+           // makeEl = SileniumUtil.getElementLocatedBy(driver, By.id("webcontent_0_row2_0_productDetailBasicInfo_aSupplier")); //gets make + supplier code
         }
         catch (TimeoutException e){
             logger.error("Couldn't find make element for " + driver.getCurrentUrl());

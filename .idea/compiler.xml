@@ -22,7 +22,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="keystone" target="9" />
+      <module name="keystone" target="12" />
     </bytecodeTargetLevel>
   </component>
 </project>

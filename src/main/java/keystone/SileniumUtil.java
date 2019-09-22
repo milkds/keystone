@@ -6,6 +6,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class SileniumUtil {
 
     //returns true, if item page opened successfully.
     public static boolean openItemPage(WebDriver driver, String url) throws IOException {
-       while (true){
+     /*  while (true){
            try{
                driver.get(url);
                break;
@@ -64,13 +65,14 @@ public class SileniumUtil {
                logger.error("failed to start opening url " + url);
                reboot(driver, url);
            }
-       }
+       }*/
         logger.debug("opening page for " + url);
         while (true){
+            driver.get(url);
             try {
                 new FluentWait<>(driver)
                         .withTimeout(Duration.ofSeconds(60))
-                        .pollingEvery(Duration.ofMillis(2))
+                        .pollingEvery(Duration.ofMillis(100))
                         .ignoring(WebDriverException.class)
                         .until(ExpectedConditions.urlContains(url));
                 break;
@@ -169,7 +171,16 @@ public class SileniumUtil {
                         .withTimeout(Duration.ofSeconds(600))
                         .pollingEvery(Duration.ofMillis(50))
                         .ignoring(WebDriverException.class)
-                        .until(ExpectedConditions.presenceOfElementLocated(By.id("cartCheckoutContainer")));
+                        //.until(ExpectedConditions.presenceOfElementLocated(By.id("cartCheckoutContainer")));
+                        //.until(ExpectedConditions.presenceOfElementLocated(By.id("siteheadercontent_0_customerName")));
+                        //.until(ExpectedConditions.urlMatches("https://wwwsc.ekeystone.com"));
+                        .until(ExpectedConditions.and(
+                                ExpectedConditions.urlMatches("https://wwwsc.ekeystone.com"),
+                                ExpectedConditions.presenceOfElementLocated(By.id("divFlowPlayerScript"))
+                                ));
+              /*  new WebDriverWait(driver, 60).until(
+                        webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));*/
+              Thread.sleep(10*1000);
                 break;
             }
             catch (TimeoutException e){
@@ -178,6 +189,7 @@ public class SileniumUtil {
                     driver.quit();
                     System.exit(1);
                 }
+            } catch (InterruptedException ignored) {
             }
         }
 

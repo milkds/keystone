@@ -14,9 +14,10 @@ import java.util.Set;
 public class Controller {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
-    public static void main(String[] args) {
-      //  new Controller().getItemsFromFile(200);
+    public static void main(String[] args) throws IOException {
+       // new Controller().getItemsFromFile(200);
        // TestClass.testTwoWindows();
+     //   TestClass.testItemBuild();
         new Controller().parseItemsFromFile();
     }
 
@@ -85,4 +86,5 @@ public class Controller {
         KeyItem item = new ItemBuilder().buildItem(driver);
         KeyDAO.saveItem(item);
     }
+
 }

@@ -1,6 +1,7 @@
 package keystone.entities;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 @Entity
@@ -30,6 +31,21 @@ public class KeyItem {
     @Column(name = "IMG_LINKS")
     private String imgLinks;
 
+    @Column(name = "MY_PRICE")
+    private BigDecimal myPrice;
+
+    @Column(name = "JOBBER_PRICE")
+    private BigDecimal jobberPrice;
+
+    @Column(name = "RETAIL_PRICE")
+    private BigDecimal retailPrice;
+
+    @Column(name = "DOC_LINKS")
+    private String docLinks;
+
+    @Column(name = "HTML_DESC")
+    private String htmlDescription;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
     private List<ItemCar> itemCars;
 
@@ -51,9 +67,11 @@ public class KeyItem {
                 "make='" + make + '\'' +
                 ", partNo='" + partNo + '\'' +
                 ", features='" + features + '\'' +
-                ", description='" + description + '\'' +
                 ", shortDescription='" + shortDescription + '\'' +
                 ", imgLinks='" + imgLinks + '\'' +
+                ", myPrice=" + myPrice +
+                ", jobberPrice=" + jobberPrice +
+                ", retailPrice=" + retailPrice +
                 '}';
     }
 
@@ -116,5 +134,35 @@ public class KeyItem {
     }
     public void setItemCars(List<ItemCar> itemCars) {
         this.itemCars = itemCars;
+    }
+    public BigDecimal getMyPrice() {
+        return myPrice;
+    }
+    public void setMyPrice(BigDecimal myPrice) {
+        this.myPrice = myPrice;
+    }
+    public BigDecimal getJobberPrice() {
+        return jobberPrice;
+    }
+    public void setJobberPrice(BigDecimal jobberPrice) {
+        this.jobberPrice = jobberPrice;
+    }
+    public BigDecimal getRetailPrice() {
+        return retailPrice;
+    }
+    public void setRetailPrice(BigDecimal retailPrice) {
+        this.retailPrice = retailPrice;
+    }
+    public String getDocLinks() {
+        return docLinks;
+    }
+    public void setDocLinks(String docLinks) {
+        this.docLinks = docLinks;
+    }
+    public String getHtmlDescription() {
+        return htmlDescription;
+    }
+    public void setHtmlDescription(String htmlDescription) {
+        this.htmlDescription = htmlDescription;
     }
 }
