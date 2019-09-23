@@ -10,7 +10,7 @@
                 <pattern>${string_log}</pattern>
             </PatternLayout>
         </Console>
-        <RollingFile name="fileLogger" fileName="${basePath}/app-info.log" filePattern="${basePath}/app-info-%d{yyyy-MM-dd}.log">
+        <RollingFile name="fileLogger" fileName="${basePath}\key_app-info.log" filePattern="${basePath}\key_app-info-%d{yyyy-MM-dd}.log">
             <PatternLayout>
               <!--  <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>-->
                 <pattern>${string_log}</pattern>
@@ -20,7 +20,7 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-        <RollingFile name="errorLogger" fileName="${basePath}/err-info.log" filePattern="${basePath}/err-info-%d{yyyy-MM-dd}.log">
+        <RollingFile name="errorLogger" fileName="${basePath}\key_err-info.log" filePattern="${basePath}\key_err-info-%d{yyyy-MM-dd}.log">
             <PatternLayout>
                 <!--  <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>-->
                 <pattern>${string_log}</pattern>
