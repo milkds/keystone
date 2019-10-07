@@ -17,8 +17,9 @@ public class Controller {
     public static void main(String[] args) throws IOException {
        // new Controller().getItemsFromFile(200);
        // TestClass.testTwoWindows();
-     //   TestClass.testItemBuild();
-        new Controller().parseItemsFromFile();
+        TestClass.testItemBuild();
+     //   new Controller().parseItemsFromFile();
+      //new ExcelExporter().exportToExcel();
     }
 
 

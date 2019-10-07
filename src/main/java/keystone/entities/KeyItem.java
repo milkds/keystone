@@ -46,6 +46,12 @@ public class KeyItem {
     @Column(name = "HTML_DESC")
     private String htmlDescription;
 
+    @Column(name = "KIT_ELEMENTS")
+    private String kitElements;
+
+    @Column(name = "PLAIN_DESC")
+    private String plainDesc;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
     private List<ItemCar> itemCars;
 
@@ -164,5 +170,17 @@ public class KeyItem {
     }
     public void setHtmlDescription(String htmlDescription) {
         this.htmlDescription = htmlDescription;
+    }
+    public String getKitElements() {
+        return kitElements;
+    }
+    public void setKitElements(String kitElements) {
+        this.kitElements = kitElements;
+    }
+    public String getPlainDesc() {
+        return plainDesc;
+    }
+    public void setPlainDesc(String plainDesc) {
+        this.plainDesc = plainDesc;
     }
 }

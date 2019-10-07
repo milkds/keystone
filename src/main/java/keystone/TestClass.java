@@ -26,6 +26,12 @@ public class TestClass {
     private static final Logger logger = LogManager.getLogger(TestClass.class.getName());
 
 
+
+    public static void testItemGet(){
+        KeyDAO.getAllParsedItems();
+        HibernateUtil.shutdown();
+    }
+
     public static void testTwoWindows(){
         WebDriver baseDriver = SileniumUtil.initDriver();
         Set<Cookie> allCookies = baseDriver.manage().getCookies();
@@ -62,7 +68,8 @@ public class TestClass {
        // String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=BLS24-253208";
        // String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=SKYH7006";
         //String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=BLS35-197263";
-        String url = "https://wwwsc.ekeystone.com/Search/Detail?aid=81577991";
+        //String url = "https://wwwsc.ekeystone.com/Search/Detail?aid=81577991";
+        String url = "https://wwwsc.ekeystone.com/Search/Detail?pid=IVDK22014";
         WebDriver driver = SileniumUtil.initDriver();
         try {
             SileniumUtil.openItemPage(driver, url);

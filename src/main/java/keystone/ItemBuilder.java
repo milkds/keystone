@@ -32,11 +32,74 @@ public class ItemBuilder {
         getPrices(item, driver);
         getDocs(item, driver);
         getFits(item, driver);
+        getKitElements(item, driver);
 
 
         logger.debug("Item built: " + item);
 
         return item;
+    }
+
+    private void getKitElements(KeyItem item, WebDriver driver) {
+        WebElement kitTabEl = null;
+        try {
+            kitTabEl = driver.findElement(By.id("kitComponentsTab"));
+        }
+        catch (NoSuchElementException e){
+            item.setKitElements("No Kit Elements");
+            return;
+        }
+        kitTabEl.click();
+        WebElement kitElementsListEl = null;
+        try {
+            kitElementsListEl = new FluentWait<>(driver)
+                    .withTimeout(Duration.ofSeconds(120))
+                    .pollingEvery(Duration.ofMillis(2))
+                    .ignoring(WebDriverException.class)
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.id("webcontent_0_row2_0_productDetailTabs_upKitComponentsTab")));
+        }
+        catch (TimeoutException e){
+            logger.error("Kit elements list is not available at " + driver.getCurrentUrl());
+            return;
+        }
+        List<WebElement> kitElementsEls = kitElementsListEl.findElements(By.cssSelector("div[id^='webcontent_0_row2_0_productDetailTabs_kitComponentsResultList_rptrResultsRows_divResult_']"));
+        if (kitElementsEls.size()==0){
+            logger.error("No kit elements available in kit elements list at " + driver.getCurrentUrl());
+            return;
+        }
+        StringBuilder elementBuilder = new StringBuilder();
+        elementBuilder.append("---");
+        elementBuilder.append(System.lineSeparator());
+        elementBuilder.append(System.lineSeparator());
+        kitElementsEls.forEach(kitElementEl->{
+            WebElement infoEl = kitElementEl.findElement(By.cssSelector("div[id^='webcontent_0_row2_0_productDetailTabs_kitComponentsResultList_rptrResultsRows_divResultContent_']"));
+            WebElement headerEl = infoEl.findElement(By.className("resultsContentHeader"));
+            WebElement manufactEl = headerEl.findElement(By.cssSelector("span[id^='webcontent_0_row2_0_productDetailTabs_kitComponentsResultList_rptrResultsRows_lblManufacturerName_']"));
+            WebElement partNoEl = headerEl.findElement(By.cssSelector("span[id^='webcontent_0_row2_0_productDetailTabs_kitComponentsResultList_rptrResultsRows_lblManufacturerNumber_']"));
+            WebElement descEl = infoEl.findElement(By.className("resultsContentDes"));
+            WebElement linkEl = descEl.findElement(By.className("descriptionLink"));
+            logger.info(linkEl.getAttribute("innerHTML"));
+            linkEl = linkEl.findElement(By.tagName("a"));
+            WebElement picLinkEl = kitElementEl.findElement(By.tagName("img"));
+            String picLink = picLinkEl.getAttribute("src");
+            picLink = StringUtils.substringBefore(picLink, "&");
+
+            elementBuilder.append(manufactEl.getText());
+            elementBuilder.append(System.lineSeparator());
+            elementBuilder.append(partNoEl.getText());
+            elementBuilder.append(System.lineSeparator());
+            elementBuilder.append(descEl.getText());
+            elementBuilder.append(System.lineSeparator());
+            elementBuilder.append(linkEl.getAttribute("href"));
+            elementBuilder.append(System.lineSeparator());
+            elementBuilder.append(picLink);
+            elementBuilder.append(System.lineSeparator());
+            elementBuilder.append(System.lineSeparator());
+        });
+        elementBuilder.append("---");
+        logger.info(elementBuilder.toString());
+        item.setKitElements(elementBuilder.toString());
+
     }
 
     private void getDocs(KeyItem item, WebDriver driver) {
@@ -120,8 +183,10 @@ public class ItemBuilder {
         }
         descHtmlBuilder.append(fullDescStr);
         item.setHtmlDescription(descHtmlBuilder.toString());
+        item.setPlainDesc(fullDescEl.getText());
         logger.debug("GOT DESCRIPTION:");
         logger.debug(descHtmlBuilder.toString());
+        logger.info(item.getPlainDesc());
 
     }
 

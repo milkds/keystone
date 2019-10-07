@@ -234,4 +234,23 @@ public class KeyDAO {
 
         return parsedItemSet;
     }
+
+    public static Set<KeyItem> getAllParsedItems() {
+        Session session = HibernateUtil.getSession();
+        List<KeyItem> parsedItemsList = new ArrayList<>();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<KeyItem> crQ = builder.createQuery(KeyItem.class);
+        Root<KeyItem> root = crQ.from(KeyItem.class);
+        Query q = session.createQuery(crQ);
+        parsedItemsList = q.getResultList();
+
+        parsedItemsList.forEach(item->{
+            logger.debug(item);
+           item.getItemCars().forEach(itemCar -> {
+               logger.debug(itemCar.getCar());
+           });
+        });
+        session.close();
+        return new HashSet<>(parsedItemsList);
+    }
 }
