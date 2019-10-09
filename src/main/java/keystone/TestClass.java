@@ -4,6 +4,7 @@ import keystone.entities.Car;
 import keystone.entities.CarAttribute;
 import keystone.entities.KeyItem;
 import keystone.entities.Specification;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -25,7 +26,18 @@ import java.util.Set;
 public class TestClass {
     private static final Logger logger = LogManager.getLogger(TestClass.class.getName());
 
+    public static void testStringBetween(){
+        String desc = "Lift Kit Suspension; Terrain Flex; 3-1/2 To 4-1/2 Inch Front Lift; 3-1/2 To 4-1/2 Inch Rear Lift; With Falcon Shock Absorbers In Kit; Black Components/ Gray Shock Absorbers; With Front And Rear Coil Springs/ Front And Rear Sway Bar End Links/ Front And Rear Lower Control Arms/ Bump Stop Extensions/ Front Track Bar/ Installation Hardware";
+        System.out.println(StringUtils.substringBetween(desc, "; ", "Front Lift"));
+    }
 
+    public static void testDrive(){
+        String attString = "Four Wheel Drive SuperCab (Extended)";
+        String result = StringUtils.substringBetween(attString," ", "Wheel Drive");
+        System.out.println(result);
+        System.out.println(result==null);
+        System.out.println(result.length());
+    }
 
     public static void testItemGet(){
         KeyDAO.getAllParsedItems();
