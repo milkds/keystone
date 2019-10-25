@@ -52,12 +52,15 @@ public class KeyItem {
     @Column(name = "PLAIN_DESC")
     private String plainDesc;
 
+    @Column(name = "WEB_LINK")
+    private String webLink;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
     private List<ItemCar> itemCars;
 
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-            name = "items_specs",
+            name = "shocks_categories",
             joinColumns = { @JoinColumn(name = "ITEM_ID") },
             inverseJoinColumns = { @JoinColumn(name = "SPEC_ID") }
     )
@@ -182,5 +185,11 @@ public class KeyItem {
     }
     public void setPlainDesc(String plainDesc) {
         this.plainDesc = plainDesc;
+    }
+    public String getWebLink() {
+        return webLink;
+    }
+    public void setWebLink(String webLink) {
+        this.webLink = webLink;
     }
 }

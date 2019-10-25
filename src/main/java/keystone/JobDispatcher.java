@@ -47,7 +47,7 @@ public class JobDispatcher {
     private Set<String> getParsedItemsLinks(Set<String> parsedItems) {
         Set<String> result = new HashSet<>();
         parsedItems.forEach(item->{
-            result.add("https://wwwsc.ekeystone.com/Search/Detail?pid=BLS"+item);
+            result.add("https://wwwsc.ekeystone.com/Search/Detail?pid="+item);
         });
 
         return result;

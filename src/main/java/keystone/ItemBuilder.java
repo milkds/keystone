@@ -21,6 +21,7 @@ public class ItemBuilder {
 
     public KeyItem buildItem(WebDriver driver) throws IOException {
         KeyItem item = new KeyItem();
+        getWebLink(item, driver);
         getMake(item, driver);
         getPartNo(item, driver);
         getFeatures(item, driver);
@@ -38,6 +39,10 @@ public class ItemBuilder {
         logger.debug("Item built: " + item);
 
         return item;
+    }
+
+    private void getWebLink(KeyItem item, WebDriver driver) {
+        item.setWebLink(driver.getCurrentUrl());
     }
 
     private void getKitElements(KeyItem item, WebDriver driver) {

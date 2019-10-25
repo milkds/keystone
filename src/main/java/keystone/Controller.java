@@ -15,11 +15,8 @@ public class Controller {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
     public static void main(String[] args) throws IOException {
-       // new Controller().getItemsFromFile(200);
-    //    TestClass.testDrive();
-      //  TestClass.testStringBetween();
-     //   new Controller().parseItemsFromFile();
-      new ExcelExporter().exportToExcel();
+         new Controller().parseItemsFromFile();
+      // new ExcelExporter().exportToExcel();
     }
 
 
