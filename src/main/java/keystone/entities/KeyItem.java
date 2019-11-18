@@ -60,7 +60,7 @@ public class KeyItem {
 
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-            name = "shocks_categories",
+            name = "items_specs",
             joinColumns = { @JoinColumn(name = "ITEM_ID") },
             inverseJoinColumns = { @JoinColumn(name = "SPEC_ID") }
     )
