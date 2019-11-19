@@ -1,10 +1,15 @@
 package keystone;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 public class JobDispatcher {
+    private static final Logger logger = LogManager.getLogger(JobDispatcher.class.getName());
+
     public Set<String> getNewItems() {
        /* List<String> itemsToParse = new ArrayList<>();
        // itemsToParse.add("https://wwwsc.ekeystone.com/Search/Detail?pid=BLS24-253208");
@@ -16,14 +21,18 @@ public class JobDispatcher {
 
      //   List<String> itemsToParse = badGetLinks();
         List<String> itemsToParse = getFullLinks();
-        Set<String> parsedItems = KeyDAO.getParsedItems();
-        Set<String> parsedItemsLinks = getParsedItemsLinks(parsedItems);
+        logger.debug("Total items to parse in file " + itemsToParse.size());
+        //Set<String> parsedItems = KeyDAO.getParsedItems();
+        //Set<String> parsedItemsLinks = getParsedItemsLinks(parsedItems);
+        Set<String> parsedItemsLinks = KeyDAO.getParsedItemLinks();
+        logger.debug("Parsed items total " + parsedItemsLinks.size());
         Set<String> itemsToParseSet = new HashSet<>();
         itemsToParse.forEach(item->{
             if (!parsedItemsLinks.contains(item)){
                 itemsToParseSet.add(item);
             }
         });
+        logger.debug("Total items to parse for current launch " + itemsToParseSet.size());
 
         return itemsToParseSet;
     }

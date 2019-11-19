@@ -253,4 +253,20 @@ public class KeyDAO {
         session.close();
         return new HashSet<>(parsedItemsList);
     }
+
+    public static Set<String> getParsedItemLinks() {
+        Session session = HibernateUtil.getSession();
+        List<String> parsedItemsList = new ArrayList<>();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<String> crQ = builder.createQuery(String.class);
+        Root<KeyItem> root = crQ.from(KeyItem.class);
+        crQ.select(root.get("webLink"));
+        Query q = session.createQuery(crQ);
+        parsedItemsList = q.getResultList();
+        session.close();
+        Set<String> parsedItemSet = new HashSet<>(parsedItemsList);
+
+        return parsedItemSet;
+
+    }
 }
