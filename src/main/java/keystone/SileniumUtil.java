@@ -180,7 +180,8 @@ public class SileniumUtil {
                                 ));
               /*  new WebDriverWait(driver, 60).until(
                         webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));*/
-              Thread.sleep(10*1000);
+                logger.debug("login wait");
+                Thread.sleep(20*1000);
                 break;
             }
             catch (TimeoutException e){
@@ -192,7 +193,7 @@ public class SileniumUtil {
             } catch (InterruptedException ignored) {
             }
         }
-
+        logger.debug("after wait");
     }
 
     public static void waitForElementLocatedBy(WebDriver driver, By by){

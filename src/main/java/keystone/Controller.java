@@ -24,10 +24,14 @@ public class Controller {
         //list of item urls
         Set<String> itemPartsToParse = new JobDispatcher().getNewItems();
         WebDriver driver = SileniumUtil.initDriver();
+        logger.debug("driver initiated");
         Set<Cookie> cookies = driver.manage().getCookies();
+        logger.debug("got cookies");
         int totalItems = itemPartsToParse.size();
+        logger.debug("total links to parse " + totalItems);
         int currentItem = 1;
         for (String itemLink : itemPartsToParse) {
+            logger.debug("getting " + itemLink);
             WebDriver itemDriver = new ItemOpener(cookies).openItemPage(itemLink);
             KeyItem item = null;
           while (true){
