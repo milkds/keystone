@@ -25,7 +25,17 @@ public class ExcelExporter {
 
     public void exportToExcel(){
         Set<KeyItem> allItems = KeyDAO.getAllParsedItems();
-        writeDBToExcel(allItems);
+        List<String> newLinksList = new JobDispatcher().getFullLinks();
+        Set<String> newItems = new HashSet<>(newLinksList);
+        Set<KeyItem> itemsToWrite = new HashSet<>();
+        allItems.forEach(item->{
+            String webLink = item.getWebLink();
+            if (webLink!=null&&webLink.length()>0&&newItems.contains(webLink)){
+                itemsToWrite.add(item);
+            }
+        });
+
+        writeDBToExcel(itemsToWrite);
         HibernateUtil.shutdown();
     }
 

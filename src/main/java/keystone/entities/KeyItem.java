@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 @Entity
 @Table(name = "items")
 public class KeyItem {
@@ -82,6 +84,19 @@ public class KeyItem {
                 ", jobberPrice=" + jobberPrice +
                 ", retailPrice=" + retailPrice +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof KeyItem)) return false;
+        KeyItem keyItem = (KeyItem) o;
+        return Objects.equals(getWebLink(), keyItem.getWebLink());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getWebLink());
     }
 
     public int getItemID() {

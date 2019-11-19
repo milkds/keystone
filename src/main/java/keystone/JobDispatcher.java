@@ -37,7 +37,7 @@ public class JobDispatcher {
         return itemsToParseSet;
     }
 
-    private List<String> getFullLinks() {
+    public List<String> getFullLinks() {
         List<String> links = new ArrayList<>();
         Scanner s = null;
         try {
