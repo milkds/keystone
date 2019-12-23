@@ -353,6 +353,16 @@ public class ExcelExporter {
             String link = split[i];
             link = StringUtils.substringBefore(link, "&maxheight");
             picLinkBuilder.append(link);
+            //adding caption
+            String caption = split[i];
+            String[] captionSplt = caption.split(";;");
+            if (captionSplt.length>1){
+                caption = captionSplt[1];
+                picLinkBuilder.append(";;");
+                picLinkBuilder.append(caption);
+            }
+
+
             if (splitLength-i>1){
                 picLinkBuilder.append(System.lineSeparator());
             }
@@ -619,6 +629,10 @@ public class ExcelExporter {
         cell = row.createCell(23);
         cell.setCellType(CellType.STRING);
         cell.setCellValue("item url");
+
+        /*cell = row.createCell(24);
+        cell.setCellType(CellType.STRING);
+        cell.setCellValue("img link caption");*/
 
 
         /*cell = row.createCell(11);
