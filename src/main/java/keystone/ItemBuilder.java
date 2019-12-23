@@ -554,6 +554,11 @@ public class ItemBuilder {
             item.setImgLinks("NO_IMG_LINKS");
             return;
         }
+        String picCaption = getPicCaption(driver);
+        if (picCaption.length()>0){
+            builder.append(";;");
+            builder.append(picCaption);
+        }
         WebElement thumbnailEl = null;
         try {
             thumbnailEl = imageBlockEl.findElement(By.id("webcontent_0_row2_0_divImageScroller"));
@@ -565,6 +570,11 @@ public class ItemBuilder {
                     String imgLink = imgEl.findElement(By.tagName("img")).getAttribute("src");
                     imgLink = imgLink.replace("maxheight=68", "maxheight=250");
                     imgLink = imgLink.replace("maxwidth=68", "maxwidth=400");
+                    String thumbPicCaption = getPicCaption(driver);
+                    if (thumbPicCaption.length()>0){
+                        finalBuilder.append(";;");
+                        finalBuilder.append(thumbPicCaption);
+                    }
                     finalBuilder.append(imgLink);
                     finalBuilder.append(System.lineSeparator());
                 }
@@ -579,6 +589,20 @@ public class ItemBuilder {
             item.setImgLinks(builder.toString());
         }
 
+    }
+
+    private String getPicCaption(WebDriver driver) {
+        WebElement picCaptionEl = null;
+        try {
+            picCaptionEl = SileniumUtil.getElementLocatedBy(driver, By.id("webcontent_0_row2_0_lblCaption"));
+
+        }
+        catch (TimeoutException e){
+            logger.error("Couldn't find image caption for " + driver.getCurrentUrl());
+           return "";
+        }
+
+        return picCaptionEl.getText();
     }
 
     private void getShortDesc(KeyItem item, WebDriver driver) {
