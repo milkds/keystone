@@ -138,11 +138,33 @@ public class ExcelExporter {
         currentCell = row.createCell(23);
         currentCell.setCellValue(item.getWebLink());
 
+        currentCell = row.createCell(24);
+        currentCell.setCellValue(getCaptions(item));
+
+
         int currentRowNo = counter-1;
         counter = setFitments(sheet, counter, carsForItem);
         setCars(sheet, currentRowNo, carsForItem);
 
         return counter;
+    }
+
+    private String getCaptions(KeyItem item) {
+        String imgUrls = item.getImgLinks();
+        String[]split = imgUrls.split(";;");
+        if (split.length==1){
+            return "NO CAPTIONS";
+        }
+        StringBuilder captBuilder = new StringBuilder();
+        for (String s: split){
+            s = StringUtils.substringBefore(s, "http");
+            if (s.length()>0){
+                captBuilder.append(s);
+                captBuilder.append(System.lineSeparator());
+            }
+        }
+
+        return captBuilder.toString();
     }
 
     private String getDriveString(Set<Car> carsForItem) {
@@ -346,14 +368,22 @@ public class ExcelExporter {
 
     private String getImgLinks(KeyItem item) {
         String imgLinksBulk = item.getImgLinks();
-        String[] split = imgLinksBulk.split(" ");
+        List <String> picUrls = getPicUrls(imgLinksBulk);
         StringBuilder picLinkBuilder = new StringBuilder();
-        int splitLength = split.length;
+        picUrls.forEach(picUrl->{
+            picUrl = StringUtils.substringBefore(picUrl, "&maxheight");
+            picLinkBuilder.append(picUrl);
+            picLinkBuilder.append(System.lineSeparator());
+        });
+
+      /*
+       picLinkBuilder.append(System.lineSeparator());
+      int splitLength = split.length;
         for (int i = 0; i < splitLength ; i++) {
             String link = split[i];
             link = StringUtils.substringBefore(link, "&maxheight");
             picLinkBuilder.append(link);
-            //adding caption
+           *//* //adding caption
             String caption = split[i];
             String[] captionSplt = caption.split(";;");
             if (captionSplt.length>1){
@@ -361,14 +391,35 @@ public class ExcelExporter {
                 picLinkBuilder.append(";;");
                 picLinkBuilder.append(caption);
             }
-
+*//*
 
             if (splitLength-i>1){
                 picLinkBuilder.append(System.lineSeparator());
             }
-        }
+        }*/
 
         return picLinkBuilder.toString();
+    }
+
+    private List<String> getPicUrls(String imgLinksBulk) {
+        List<String> result = new ArrayList<>();
+        String[] split = imgLinksBulk.split(";;");
+        if (split.length==1){
+            split = imgLinksBulk.split(" ");
+            result.addAll(Arrays.asList(split));
+            return result;
+        }
+        else {
+            for (String s: split){
+                if (s.contains("http")){
+                    String url = StringUtils.substringAfter(s, "http");
+                    url = "http" + url;
+                    result.add(url);
+                }
+            }
+        }
+
+        return result;
     }
 
     private String getRearLift(KeyItem item) {
@@ -630,9 +681,9 @@ public class ExcelExporter {
         cell.setCellType(CellType.STRING);
         cell.setCellValue("item url");
 
-        /*cell = row.createCell(24);
+        cell = row.createCell(24);
         cell.setCellType(CellType.STRING);
-        cell.setCellValue("img link caption");*/
+        cell.setCellValue("img link captions");
 
 
         /*cell = row.createCell(11);
