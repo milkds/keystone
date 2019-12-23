@@ -4,6 +4,7 @@ import keystone.entities.KeyItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
@@ -15,8 +16,8 @@ public class Controller {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
     public static void main(String[] args) throws IOException {
-       //  new Controller().parseItemsFromFile();
-       new ExcelExporter().exportToExcel();
+         new Controller().parseItemsFromFile();
+    //   new ExcelExporter().exportToExcel();
     }
 
 
@@ -38,7 +39,7 @@ public class Controller {
               try {
                   item = new ItemBuilder().buildItem(itemDriver);
                   break;
-                 } catch (IOException e) {
+                 } catch (IOException| NoSuchElementException e) {
                   itemDriver.close();
                   itemDriver = new ItemOpener(cookies).openItemPage(itemLink);
               }

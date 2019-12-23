@@ -68,8 +68,8 @@ public class SileniumUtil {
        }*/
         logger.debug("opening page for " + url);
         while (true){
-            driver.get(url);
             try {
+                driver.get(url);
                 new FluentWait<>(driver)
                         .withTimeout(Duration.ofSeconds(60))
                         .pollingEvery(Duration.ofMillis(100))

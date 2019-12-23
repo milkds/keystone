@@ -135,6 +135,9 @@ public class ExcelExporter {
         currentCell = row.createCell(22);
         currentCell.setCellValue(getDriveString(carsForItem));
 
+        currentCell = row.createCell(23);
+        currentCell.setCellValue(item.getWebLink());
+
         int currentRowNo = counter-1;
         counter = setFitments(sheet, counter, carsForItem);
         setCars(sheet, currentRowNo, carsForItem);
@@ -612,6 +615,11 @@ public class ExcelExporter {
         cell = row.createCell(22);
         cell.setCellType(CellType.STRING);
         cell.setCellValue("drive");
+
+        cell = row.createCell(23);
+        cell.setCellType(CellType.STRING);
+        cell.setCellValue("item url");
+
 
         /*cell = row.createCell(11);
         cell.setCellType(CellType.STRING);
