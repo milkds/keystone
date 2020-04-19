@@ -51,6 +51,19 @@ public class Car {
     }
     public Car(){}
 
+    public Car(Car oldCar, boolean b) {
+        this.year = oldCar.getYear();
+        this.make = oldCar.getMake();
+        this.model = oldCar.getModel();
+        this.startFinish = oldCar.getStartFinish();
+        this.attString = oldCar.getAttString();
+
+        oldCar.getAttributes().forEach(oldAtt->{
+            CarAttribute newAtt = new CarAttribute(oldAtt);
+            attributes.add(newAtt);
+        });
+    }
+
     @Override
     public String toString() {
         return "Car{" +

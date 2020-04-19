@@ -22,6 +22,14 @@ public class ItemCarAttribute {
     @ManyToMany(mappedBy = "attributes")
     private List<ItemCar> itemCars = new ArrayList<>();
 
+    public ItemCarAttribute(ItemCarAttribute oldAtt) {
+        this.attName = oldAtt.getAttName();
+        this.attValue = oldAtt.getAttValue();
+    }
+
+    public ItemCarAttribute() {
+    }
+
     @Override
     public String toString() {
         return "ItemCarAttribute{" +

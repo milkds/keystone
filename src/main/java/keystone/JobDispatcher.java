@@ -5,6 +5,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class JobDispatcher {
@@ -38,19 +41,16 @@ public class JobDispatcher {
     }
 
     public List<String> getFullLinks() {
-        List<String> links = new ArrayList<>();
-        Scanner s = null;
+        List<String> result = new ArrayList<>();
+        String fileName = "src\\main\\resources\\links.txt";
         try {
-            s = new Scanner(new File("src\\main\\resources\\links.txt"));
-        } catch (FileNotFoundException e) {
+            result = Files.readAllLines(Paths.get(fileName),
+                    Charset.defaultCharset());
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        while (s.hasNext()){
-            links.add(s.next());
-        }
-        s.close();
 
-        return links;
+        return result;
     }
 
     private Set<String> getParsedItemsLinks(Set<String> parsedItems) {

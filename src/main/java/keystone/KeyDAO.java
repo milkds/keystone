@@ -44,6 +44,56 @@ public class KeyDAO {
             }
         }
     }
+    public static void saveItem2(KeyItem item, Session session) {
+      //  logItem(item);
+        Transaction transaction = null;
+        try {
+            transaction = session.getTransaction();
+            transaction.begin();
+            checkItemSpecs(item, session);
+            session.persist(item);
+            saveFitsAndCars(item, session);
+            transaction.commit();
+            logger.debug("Item saved finally " + item);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+    }
+
+    private static void saveFitsAndCars(KeyItem item, Session session) {
+        item.getItemCars().forEach(itemCar -> {
+            Car car = itemCar.getCar();
+            Car dbCar = getExistingCar(car, session);
+            if (dbCar!=null){
+               itemCar.setCar(dbCar);
+            }
+            else {
+                Set<CarAttribute> attributes = car.getAttributes();
+                Set<CarAttribute> finalAttributes = new HashSet<>();
+                if (attributes!=null&& attributes.size()!=0){
+                    attributes.forEach(attribute->{
+                        attribute = checkCarAttributeExistence(attribute, session);
+                        finalAttributes.add(attribute);
+                    });
+                    car.setAttributes(finalAttributes);
+                }
+                session.persist(car);
+            }
+            List<ItemCarAttribute> attributes = itemCar.getAttributes();
+            if (attributes!=null&&attributes.size()>0){
+                List<ItemCarAttribute> finalAttributes = new ArrayList<>();
+                attributes.forEach(attribute->{
+                    attribute = checkItemCarAttributeExistence(attribute, session);
+                    finalAttributes.add(attribute);
+                });
+                itemCar.setAttributes(finalAttributes);
+            }
+            session.persist(itemCar);
+        });
+    }
 
    /* private static void saveItemCars(List<ItemCar> itemCars, Session session) {
         logger.debug("Saving itemCars");
@@ -251,6 +301,22 @@ public class KeyDAO {
            });
         });
         session.close();
+        return new HashSet<>(parsedItemsList);
+    }
+    public static Set<KeyItem> getAllParsedItems2(Session session) {
+        List<KeyItem> parsedItemsList = new ArrayList<>();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<KeyItem> crQ = builder.createQuery(KeyItem.class);
+        Root<KeyItem> root = crQ.from(KeyItem.class);
+        Query q = session.createQuery(crQ);
+        parsedItemsList = q.getResultList();
+
+        parsedItemsList.forEach(item->{
+            logger.debug(item);
+           item.getItemCars().forEach(itemCar -> {
+               logger.debug(itemCar.getCar());
+           });
+        });
         return new HashSet<>(parsedItemsList);
     }
 

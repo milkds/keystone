@@ -29,6 +29,17 @@ public class ItemCar {
     )
     private List<ItemCarAttribute> attributes = new ArrayList<>();
 
+    public ItemCar(ItemCar oldItemCar) {
+        this.car = new Car(oldItemCar.getCar(), true);
+        oldItemCar.getAttributes().forEach(oldAtt->{
+            ItemCarAttribute newAtt = new ItemCarAttribute(oldAtt);
+            attributes.add(newAtt);
+        });
+    }
+
+    public ItemCar() {
+    }
+
     public int getItemCarID() {
         return itemCarID;
     }

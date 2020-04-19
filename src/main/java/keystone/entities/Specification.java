@@ -24,6 +24,13 @@ public class Specification {
     @ManyToMany(mappedBy = "specs")
     private List<KeyItem> items = new ArrayList<>();
 
+    public Specification(Specification oldSpec) {
+        this.specName = oldSpec.getSpecName();
+        this.specValue = oldSpec.getSpecValue();
+    }
+
+    public Specification() {
+    }
 
     @Override
     public String toString() {

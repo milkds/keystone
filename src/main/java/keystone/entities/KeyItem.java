@@ -71,6 +71,37 @@ public class KeyItem {
     @Transient
     private List<Car> cars = new ArrayList<>();
 
+    public KeyItem(KeyItem oldItem) {
+        this.make = oldItem.getMake();
+        this.partNo = oldItem.getPartNo();
+        this.features = oldItem.getFeatures();
+        this.description = oldItem.getDescription();
+        this.shortDescription = oldItem.getShortDescription();
+        this.imgLinks = oldItem.getImgLinks();
+        this.myPrice = oldItem.getMyPrice();
+        this.jobberPrice = oldItem.getJobberPrice();
+        this.retailPrice = oldItem.getRetailPrice();
+        this.docLinks = oldItem.getDocLinks();
+        this.htmlDescription = oldItem.getHtmlDescription();
+        this.kitElements = oldItem.getKitElements();
+        this.plainDesc = oldItem.getPlainDesc();
+        this.webLink = oldItem.getWebLink();
+
+        itemCars = new ArrayList<>();
+        oldItem.getItemCars().forEach(oldItemCar->{
+            ItemCar newItemCar = new ItemCar(oldItemCar);
+            newItemCar.setItem(this);
+            itemCars.add(newItemCar);
+        });
+
+        oldItem.getSpecs().forEach(oldSpec->{
+            Specification nSpec = new Specification(oldSpec);
+            this.specs.add(nSpec);
+        });
+    }
+
+    public KeyItem() {
+    }
 
     @Override
     public String toString() {

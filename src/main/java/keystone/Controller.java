@@ -3,6 +3,7 @@ package keystone;
 import keystone.entities.KeyItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -16,8 +17,22 @@ public class Controller {
     private static final Logger logger = LogManager.getLogger(Controller.class.getName());
 
     public static void main(String[] args) throws IOException {
-         new Controller().parseItemsFromFile();
-    //   new ExcelExporter().exportToExcel();
+       //  new Controller().parseItemsFromFile();
+      // new ExcelExporter().exportToExcel();
+        new Controller().copyItemsToFullBase();
+    }
+
+    private void copyItemsToFullBase() {
+        Session partSession = HibernateUtil.getSession();
+        Session fullSession = HibernateUtil.getSession2();
+        Set<KeyItem> itemsToSave = KeyDAO.getAllParsedItems2(partSession);
+        itemsToSave.forEach(oldItem->{
+            KeyItem newItem = new KeyItem(oldItem);
+            KeyDAO.saveItem2(newItem, fullSession);
+        });
+        partSession.close();
+        fullSession.close();
+        HibernateUtil.shutdown();
     }
 
 
@@ -40,16 +55,16 @@ public class Controller {
                   item = new ItemBuilder().buildItem(itemDriver);
                   break;
                  } catch (IOException| NoSuchElementException e) {
-                  itemDriver.close();
+                  itemDriver.quit();
                   itemDriver = new ItemOpener(cookies).openItemPage(itemLink);
               }
           }
             KeyDAO.saveItem(item);
-            itemDriver.close();
+            itemDriver.quit();
             logger.info("Parsed item "+ currentItem + " of total " + totalItems);
             currentItem++;
         }
-
+            HibernateUtil.shutdown();
     }
 
     public void getItemsFromFile(int maxItemsToParsePerDriver) throws IOException {
